@@ -6,91 +6,64 @@
 		<link rel="stylesheet" href="styles.css" />
 	</head>
 	<body>
-		<!-- <div class="hovertreeinfo">
-			<h2>css-3d旋转相册</h2>
-			请把光标移到立方体上面，或者点击图片。
-		</div> -->
 		<!--/*外层最大容器*/-->
+
 		<div class="wrap">
-			<!--	/*包裹所有元素的容器*/-->
 			<div class="cube">
-				<!--前面图片 -->
 				<div class="out_front">
-					<img
-						src="http://www.jd-tv.com/uploads/allimg/180822/18-1PR2110G0N0.jpg"
-						class="pic"
-					/>
+					<img src="img/01.jpg" class="pic" />
 				</div>
-				<!--后面图片 -->
+
 				<div class="out_back">
-					<img
-						src="https://img.yna.co.kr/etc/inner/CK/2018/07/26/ACK20180726001500881_01_i_P4.jpg"
-						class="pic"
-					/>
+					<img src="img/01.jpg" class="pic" />
 				</div>
-				<!--左图片 -->
+
 				<div class="out_left">
-					<img
-						src="http://www.weimeicun.com/uploads/allimg/181109/1010-1Q109152421Q8.jpg"
-						class="pic"
-					/>
+					<img src="img/01.jpg" class="pic" />
 				</div>
 				<div class="out_right">
-					<img
-						src="http://p3.ifengimg.com/cmpp/2016/07/20/13/cdf377cd-ca7f-41f3-b481-c99561a0a40e_size29_w500_h332.jpg"
-						class="pic"
-					/>
+					<img src="img/01.jpg" class="pic" />
 				</div>
 				<div class="out_top">
-					<img
-						src="http://img.mm4000.com/file/9/49/c43d6065b5_1044.jpg"
-						class="pic"
-					/>
+					<img src="img/01.jpg" class="pic" />
 				</div>
 				<div class="out_bottom">
-					<img
-						src="http://imgs.jushuo.com/dimg/2016-12-16/58535d65478d9.jpg"
-						class="pic"
-					/>
+					<img src="img/01.jpg" class="pic" />
 				</div>
-				<!--小正方体 -->
+
 				<span class="in_front">
-					<img
-						src="http://p0.ifengimg.com/pmop/2018/0404/B05F7F3EEDA9A308722D757446A5357677F77C79_size64_w540_h700.jpeg"
-						class="in_pic"
-					/>
+					<img src="img/01.jpg" class="in_pic" />
 				</span>
 				<span class="in_back">
-					<img
-						src="http://p3.ifengimg.com/a/2018_30/e7dfb1ff77a73ff_size29_w499_h624.jpg"
-						class="in_pic"
-					/>
+					<img src="img/01.jpg" class="in_pic" />
 				</span>
 				<span class="in_left">
-					<img
-						src="http://img1.xiazaizhijia.com/walls/20160801/middle_510aafcd093f6a2.jpg"
-						class="in_pic"
-					/>
+					<img src="img/01.jpg" class="in_pic" />
 				</span>
 				<span class="in_right">
-					<img
-						src="https://cn.bing.com/th?id=OIP.LpZnh1XtRA4buMi5P4qOegHaKh&pid=Api&rs=1"
-						class="in_pic"
-					/>
+					<img src="img/01.jpg" class="in_pic" />
 				</span>
 				<span class="in_top">
-					<img
-						src="http://www.sosoxian.com/uploads/allimg/160926/1-160926091526.jpg"
-						class="in_pic"
-					/>
+					<img src="img/01.jpg" class="in_pic" />
 				</span>
 				<span class="in_bottom">
-					<img
-						src="https://n.sinaimg.cn/ent/transform/20160720/Cdjh-fxuapvw2412326.jpg"
-						class="in_pic"
-					/>
+					<img src="img/01.jpg" class="in_pic" />
 				</span>
 			</div>
 		</div>
+		<audio id="bgm" autoplay>
+			<source src="audio/所有都被一笔带过.mp3" type="audio/mpeg" />
+		</audio>
+		<script type="text/javascript">
+			document.addEventListener('touchstart', () => {
+				const audio = document.querySelector('#bgm');
+				audio.volume = 0.4;
+				if (audio.duration > 0 && !audio.paused) {
+					//audio.pause();
+				} else {
+					audio.play();
+				}
+			});
+		</script>
 	</body>
 </html>
