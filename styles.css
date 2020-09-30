@@ -30,7 +30,7 @@ html {
 	width: 200px;
 	height: 200px;
 	/*改变左右上下,图片方块移动*/
-	margin: 150px auto;
+	margin: 250px auto;
 	position: relative;
 }
 /*包裹所有容器样式*/
