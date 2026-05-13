@@ -2,68 +2,216 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>css-3d旋转相册</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>3D Photo Cube</title>
 		<link rel="stylesheet" href="styles.css" />
 	</head>
 	<body>
-		<!--/*外层最大容器*/-->
+		<div class="aurora"></div>
 
-		<div class="wrap">
+		<canvas id="sparkles"></canvas>
+
+		<div class="countdown" aria-hidden="true">
+			<div class="countdown__num" id="countdownNum"></div>
+		</div>
+
+		<div class="start-screen" id="startScreen">
+			<h1 class="start-screen__title">3D Photo Cube</h1>
+			<p class="start-screen__subtitle">Press start to begin</p>
+			<button class="start-btn" id="startBtn" type="button">
+				<span class="start-btn__label">Start</span>
+				<span class="start-btn__glow"></span>
+			</button>
+		</div>
+
+		<div class="wrap" id="wrap">
 			<div class="cube">
-				<div class="out_front">
-					<img src="img/01.jpg" class="pic" />
-				</div>
+				<div class="out_front"><img src="img/01.jpg" class="pic" /></div>
+				<div class="out_back"><img src="img/01.jpg" class="pic" /></div>
+				<div class="out_left"><img src="img/01.jpg" class="pic" /></div>
+				<div class="out_right"><img src="img/01.jpg" class="pic" /></div>
+				<div class="out_top"><img src="img/01.jpg" class="pic" /></div>
+				<div class="out_bottom"><img src="img/01.jpg" class="pic" /></div>
 
-				<div class="out_back">
-					<img src="img/01.jpg" class="pic" />
-				</div>
-
-				<div class="out_left">
-					<img src="img/01.jpg" class="pic" />
-				</div>
-				<div class="out_right">
-					<img src="img/01.jpg" class="pic" />
-				</div>
-				<div class="out_top">
-					<img src="img/01.jpg" class="pic" />
-				</div>
-				<div class="out_bottom">
-					<img src="img/01.jpg" class="pic" />
-				</div>
-
-				<span class="in_front">
-					<img src="img/01.jpg" class="in_pic" />
-				</span>
-				<span class="in_back">
-					<img src="img/01.jpg" class="in_pic" />
-				</span>
-				<span class="in_left">
-					<img src="img/01.jpg" class="in_pic" />
-				</span>
-				<span class="in_right">
-					<img src="img/01.jpg" class="in_pic" />
-				</span>
-				<span class="in_top">
-					<img src="img/01.jpg" class="in_pic" />
-				</span>
-				<span class="in_bottom">
-					<img src="img/01.jpg" class="in_pic" />
-				</span>
+				<span class="in_front"><img src="img/01.jpg" class="in_pic" /></span>
+				<span class="in_back"><img src="img/01.jpg" class="in_pic" /></span>
+				<span class="in_left"><img src="img/01.jpg" class="in_pic" /></span>
+				<span class="in_right"><img src="img/01.jpg" class="in_pic" /></span>
+				<span class="in_top"><img src="img/01.jpg" class="in_pic" /></span>
+				<span class="in_bottom"><img src="img/01.jpg" class="in_pic" /></span>
 			</div>
 		</div>
-		<audio id="bgm" autoplay>
+
+		<div class="hint">hover the cube</div>
+
+		<audio id="bgm" loop>
 			<source src="audio/所有都被一笔带过.mp3" type="audio/mpeg" />
 		</audio>
-		<script type="text/javascript">
-			document.addEventListener('touchstart', () => {
-				const audio = document.querySelector('#bgm');
-				audio.volume = 0.4;
-				if (audio.duration > 0 && !audio.paused) {
-					//audio.pause();
-				} else {
-					audio.play();
+
+		<script>
+			(function () {
+				const canvas = document.getElementById('sparkles');
+				const ctx = canvas.getContext('2d');
+				const dpr = Math.max(window.devicePixelRatio || 1, 1);
+
+				function resize() {
+					canvas.width = window.innerWidth * dpr;
+					canvas.height = window.innerHeight * dpr;
+					canvas.style.width = window.innerWidth + 'px';
+					canvas.style.height = window.innerHeight + 'px';
+					ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 				}
-			});
+				resize();
+				window.addEventListener('resize', resize);
+
+				const particles = [];
+				const COLORS = ['#ffd1f5', '#b88cff', '#4ad6ff', '#ffffff', '#ffe69a'];
+
+				function emit(x, y, count, opts) {
+					opts = opts || {};
+					const speedMin = opts.speedMin || 2;
+					const speedMax = opts.speedMax || 9;
+					const life = opts.life || 90;
+					for (let i = 0; i < count; i++) {
+						const angle = Math.random() * Math.PI * 2;
+						const speed = speedMin + Math.random() * (speedMax - speedMin);
+						particles.push({
+							x: x,
+							y: y,
+							vx: Math.cos(angle) * speed,
+							vy: Math.sin(angle) * speed,
+							life: life + Math.random() * 30,
+							age: 0,
+							size: 1 + Math.random() * 2.5,
+							color: COLORS[Math.floor(Math.random() * COLORS.length)],
+							spin: Math.random() * Math.PI,
+							spinRate: (Math.random() - 0.5) * 0.2,
+						});
+					}
+				}
+
+				function step() {
+					ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+					for (let i = particles.length - 1; i >= 0; i--) {
+						const p = particles[i];
+						p.age++;
+						p.vx *= 0.985;
+						p.vy = p.vy * 0.985 + 0.04;
+						p.x += p.vx;
+						p.y += p.vy;
+						p.spin += p.spinRate;
+
+						const t = p.age / p.life;
+						if (t >= 1) {
+							particles.splice(i, 1);
+							continue;
+						}
+						const alpha = 1 - t;
+
+						ctx.save();
+						ctx.translate(p.x, p.y);
+						ctx.rotate(p.spin);
+						ctx.globalAlpha = alpha;
+						ctx.fillStyle = p.color;
+						ctx.shadowColor = p.color;
+						ctx.shadowBlur = 12;
+						drawStar(ctx, 0, 0, 4, p.size * 2.2, p.size);
+						ctx.restore();
+					}
+					requestAnimationFrame(step);
+				}
+
+				function drawStar(ctx, cx, cy, spikes, outer, inner) {
+					let rot = (Math.PI / 2) * 3;
+					const step = Math.PI / spikes;
+					ctx.beginPath();
+					ctx.moveTo(cx, cy - outer);
+					for (let i = 0; i < spikes; i++) {
+						ctx.lineTo(cx + Math.cos(rot) * outer, cy + Math.sin(rot) * outer);
+						rot += step;
+						ctx.lineTo(cx + Math.cos(rot) * inner, cy + Math.sin(rot) * inner);
+						rot += step;
+					}
+					ctx.lineTo(cx, cy - outer);
+					ctx.closePath();
+					ctx.fill();
+				}
+
+				step();
+
+				const numEl = document.getElementById('countdownNum');
+				const wrap = document.getElementById('wrap');
+				const startScreen = document.getElementById('startScreen');
+				const startBtn = document.getElementById('startBtn');
+				const audio = document.getElementById('bgm');
+
+				function showNumber(n, delay) {
+					setTimeout(function () {
+						numEl.textContent = n;
+						numEl.classList.remove('is-active');
+						void numEl.offsetWidth;
+						numEl.classList.add('is-active');
+
+						emit(window.innerWidth / 2, window.innerHeight / 2, 30, {
+							speedMin: 1,
+							speedMax: 4,
+							life: 60,
+						});
+					}, delay);
+				}
+
+				function startSequence() {
+					if (startScreen.classList.contains('is-hidden')) return;
+					startScreen.classList.add('is-hidden');
+
+					audio.volume = 0.4;
+					audio.currentTime = 0;
+					audio.play().catch(function () {});
+
+					const btnRect = startBtn.getBoundingClientRect();
+					emit(
+						btnRect.left + btnRect.width / 2,
+						btnRect.top + btnRect.height / 2,
+						80,
+						{ speedMin: 2, speedMax: 8, life: 80 }
+					);
+
+					showNumber(3, 600);
+					showNumber(2, 1600);
+					showNumber(1, 2600);
+
+					setTimeout(function () {
+						numEl.textContent = '';
+						const cx = window.innerWidth / 2;
+						const cy = window.innerHeight / 2;
+						emit(cx, cy, 220, { speedMin: 3, speedMax: 14, life: 110 });
+						setTimeout(function () {
+							emit(cx, cy, 120, { speedMin: 6, speedMax: 18, life: 90 });
+						}, 120);
+
+						setTimeout(function () {
+							wrap.classList.add('is-revealed');
+						}, 200);
+
+						setInterval(function () {
+							emit(
+								Math.random() * window.innerWidth,
+								Math.random() * window.innerHeight,
+								1,
+								{ speedMin: 0.1, speedMax: 0.8, life: 80 }
+							);
+						}, 400);
+					}, 3600);
+				}
+
+				startBtn.addEventListener('click', startSequence);
+				document.addEventListener('keydown', function (e) {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						startSequence();
+					}
+				});
+			})();
 		</script>
 	</body>
 </html>
